@@ -27,6 +27,9 @@ class ActivityLogger
     /** @var \Illuminate\Database\Eloquent\Model */
     protected $causedBy;
 
+    /** @var string */
+    protected $causedIpAddress;
+
     /** @var \Illuminate\Support\Collection */
     protected $properties;
 
@@ -50,6 +53,8 @@ class ActivityLogger
         $this->logName = $config['activitylog']['default_log_name'];
 
         $this->logEnabled = $config['activitylog']['enabled'] ?? true;
+
+        $this->causedIpAddress = \Request::ip();
     }
 
     public function performedOn(Model $model)
@@ -146,6 +151,8 @@ class ActivityLogger
         $activity->description = $this->replacePlaceholders($description, $activity);
 
         $activity->log_name = $this->logName;
+
+        $activity->causer_ip_address = $this->causedIpAddress;
 
         $activity->save();
 
