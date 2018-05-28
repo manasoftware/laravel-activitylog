@@ -30,6 +30,9 @@ class ActivityLogger
     /** @var string */
     protected $causedIpAddress;
 
+    /** @var string */
+    protected $causedAgent;
+
     /** @var \Illuminate\Support\Collection */
     protected $properties;
 
@@ -55,6 +58,8 @@ class ActivityLogger
         $this->logEnabled = $config['activitylog']['enabled'] ?? true;
 
         $this->causedIpAddress = \Request::ip();
+
+        $this->causedAgent = \Request::header('User-Agent');
     }
 
     public function performedOn(Model $model)
@@ -153,6 +158,8 @@ class ActivityLogger
         $activity->log_name = $this->logName;
 
         $activity->causer_ip_address = $this->causedIpAddress;
+
+        $activity->causer_agent = $this->causedAgent;
 
         $activity->save();
 
